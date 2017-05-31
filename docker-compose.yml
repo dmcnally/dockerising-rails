@@ -1,0 +1,34 @@
+version: '2'
+
+volumes:
+  db-data:
+    external: false
+  rubygems_cache:
+    
+
+services:
+  postgres:
+    environment:
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+    image: postgres:latest
+    volumes:
+      - db-data:/usr/local/pgsql/local/data
+      - rubygems_cache:/rubygems
+    ports:
+      - "5433:5432"
+  app:
+    environment:
+      DATABASE_URL: 'postgres://postgres:@postgres:5432/myapp_production'
+      TEST_DATABASE_URL: 'postgres://postgres:@postgres:5432/myapp_test'
+      DEVELOPMENT_DATABASE_URL: 'postgres://postgres:@postgres:5432/myapp_development'
+      GEM_HOME: '/rubygems'
+    env_file: .env
+    build: .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      

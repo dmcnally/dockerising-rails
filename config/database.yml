@@ -1,0 +1,3 @@
+development:
+  url: <%= ENV['DEVELOPMENT_DATABASE_URL'] %>
+  
